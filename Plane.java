@@ -42,9 +42,10 @@ public class Plane {
 	}
 	void calculateComplexBlocks() {
 		int maxComplexity = this.maxComplexity();
+		System.out.println("aa"+maxComplexity);
 		
 		for(int i = 0; i< blocks.size() ; i++) {
-			if(maxComplexity != 0 && blocks.get(i).getKValue()/ maxComplexity > 0.92) {
+			if(maxComplexity != 0 && blocks.get(i).getKValue()/ (float)(maxComplexity) >= 0.3) {
 				complexBlocks.add(i);
 			}
 		}
