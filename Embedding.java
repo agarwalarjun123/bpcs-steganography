@@ -27,16 +27,18 @@ public class Embedding {
 			}
 		}
 	}
-	ArrayList<int [][]> generatePayload(){
-		String s = "You should submit a report (maximum 6-pages, not including references or appendices, with\n"
-				+ "additional images, data etc, included as appendices) and accompanying video.You should submit a report (maximum 6-pages, not including references or appendices, with\\n\"\n"
-				+ "				+ \"additional images, data etc, included as appendices) and accompanying video.";
+	ArrayList<int [][]> generatePayload() {
+		String s = "Hi Man, this is Arjun";
 		byte[] byteArray = s.getBytes();
 		ArrayList<int[][]> blocks = new ArrayList<int[][]>();
 		for (int i = 0; i < Math.ceil((byteArray.length/8.0)) ;i++){
 			int[][] block = new int[8][];
-			for (int j = 0; j < 8 ; j++) {
-				block[j] = this.convertToBinaryArray(byteArray[i]);
+			int size = i == Math.ceil(byteArray.length/8.0) - 1 ? byteArray.length % 8 : 8;
+			for (int j = 0; j < size ; j++) {
+				block[j] = this.convertToBinaryArray(byteArray[i* 8 + j]);
+			}
+			for(int k = size; k < 8;k++) {
+				block[k] = new int[] {0,0,0,0,0,0,0,0};
 			}
 			blocks.add(block);
 		}

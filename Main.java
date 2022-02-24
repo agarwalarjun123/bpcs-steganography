@@ -8,9 +8,9 @@ import javax.imageio.ImageIO;
 public class Main {
 	public static void main(String args[]) {
 		
-		Image img = new Image("/Users/arjunagarwal/Downloads/Chrysanthemum.jpeg");
+		Image img = new Image("/Users/arjunagarwal/Desktop/random.jpeg");
 		try {
-			int[][] img2 = img.readPixels();
+			img.readPixels();
 			Payload p = new Payload();
 			Embedding e = new Embedding(img,p);
 			e.encode();
@@ -19,21 +19,12 @@ public class Main {
 				imgx[i][j] = grayToBinary(imgx[i][j]);
 			}
 			BufferedImage img1 = new BufferedImage(img.width, img.height, 5);
-
 	        for(int i = 0; i < img.height; i++) {
 	        	for(int j = 0; j < img.width; j++) {
-	        		img1.setRGB(img.width -1 - j, img.height -1 - i, imgx[i][j]);
+	        		img1.setRGB(j,  i, imgx[i][j]);
 	        	}
 	        }
-	        for(int i =0; i< img.height; i++) {
-	        	for (int j = 0; j< img.width; j++) {
-	        		if(img2[i][j] != imgx[i][j]) {
-	        			System.out.println("i -" + i + " j -" + j);
-	        		}
-	        	}
-	        }
-
-	        ImageIO.write(img1, "jpeg", new File("/Users/arjunagarwal/Desktop/Chrysanthemum11211212.jpeg"));
+	        ImageIO.write(img1, "png", new File("/Users/arjunagarwal/Desktop/random2.jpeg"));
 			
 		}
 		catch(Exception e) {
