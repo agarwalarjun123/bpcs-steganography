@@ -6,9 +6,7 @@ public class Block {
 	Block(int r, int c, int[][] img){
 		this.r = r;
 		this.c = c;
-		System.out.println("r="+r);
-		System.out.println("c="+c);
-		for(int i = r; i< r+8; i++) for(int j = c; j< c+8; j++) block[i-r][j-c] = img[i][j];
+		for(int i = r; i< r+8 ; i++) for(int j = c; j < c+8; j++) block[i-r][j-c] = img[i][j];
 	}
 	int getKValue() {
 		int changes = 0;

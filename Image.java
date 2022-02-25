@@ -71,6 +71,8 @@ public class Image {
 	}
 	int[][] mergePlanes(){
 		int[][] finalImage = new int[height][width];
+		for (int i = 0;i< height; i++) for (int j = 0;j< width; j++) finalImage[i][j] = pixels[i][j];
+		
 		ArrayList<int[][]> mergedPlanes = new ArrayList<int[][]>(); 
 		for(int i =0 ;i<24;i++) {
 			mergedPlanes.add(this.planes[i].mergeBlocks());
@@ -80,6 +82,7 @@ public class Image {
 				String bits = "";
 				for(int k =0;k < mergedPlanes.size();k++ ) {
 					bits = Integer.toString(mergedPlanes.get(k)[i][j]) + bits;
+					
 				}
 				finalImage[i][j] = Integer.parseInt(bits, 2);
 				

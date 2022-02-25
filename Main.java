@@ -1,17 +1,19 @@
 package BPCS;
 import java.io.File;
-import java.util.ArrayList;
+
 import java.awt.image.BufferedImage;
 
 import javax.imageio.ImageIO;
 
+
 public class Main {
 	public static void main(String args[]) {
-		
-		Image img = new Image("/Users/arjunagarwal/Desktop/random.jpeg");
+
+		Image img = new Image("/Users/arjunagarwal/Desktop/moon.jpeg");
 		try {
-			img.readPixels();
-			Payload p = new Payload();
+			int[][] img2 = img.readPixels();
+			Payload p = new Payload("/Users/arjunagarwal/Desktop/rrr.jpeg","");
+			
 			Embedding e = new Embedding(img,p);
 			e.encode();
 			int[][] imgx = img.mergePlanes();
@@ -24,7 +26,7 @@ public class Main {
 	        		img1.setRGB(j,  i, imgx[i][j]);
 	        	}
 	        }
-	        ImageIO.write(img1, "png", new File("/Users/arjunagarwal/Desktop/random2.jpeg"));
+	        ImageIO.write(img1,"jpeg", new File("/Users/arjunagarwal/Desktop/moon9.jpeg"));
 			
 		}
 		catch(Exception e) {
