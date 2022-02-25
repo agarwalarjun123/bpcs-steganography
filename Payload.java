@@ -33,7 +33,6 @@ public class Payload {
 			blocks.add(block);
 			
 		}
-		System.out.println("ddd");
 	}
 	int[][] conjugateBlock(int[][] block) {
 		int i = 0;

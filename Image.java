@@ -30,6 +30,7 @@ public class Image {
 			for (int j =0; j< this.width; j++)
 				pixels[i][j] = bufferedImage.getRGB(j,i);
 		}
+
 		this.pixels = pixels;
 		this.convertToGrayCode();
 		this.setupPlanes();
@@ -39,7 +40,10 @@ public class Image {
 		int[][] graycode = new int[height][width];
 		for(int i = 0; i< this.height; i++) {
 			for(int j = 0; j < this.width; j++) {
-				graycode[i][j] = (this.pixels[i][j] >> 1) ^ this.pixels[i][j];
+				int red = (this.pixels[i][j] >> 16) & 0xff;
+				int green = (this.pixels[i][j] >> 8) & 0xff;
+				int blue = (this.pixels[i][j]) & 0xff;
+				graycode[i][j] = (((red >> 1) ^ red) << 16) | (((green >> 1) ^ green) << 8) | ((blue >> 1) ^ blue);
 			}
 			
 		}

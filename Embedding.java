@@ -16,9 +16,9 @@ public class Embedding {
 		int position = 0;
 		ArrayList<int [][]> payload = p.blocks;
 		System.out.println(payload.size());
-		for(Plane plane: planes) {
-			ArrayList<Block> blocks = plane.getBlocks();
-			for(int complexBlock : plane.getComplexRegions()) {
+		for(int i = 0;i< planes.length; i++) {
+			ArrayList<Block> blocks = planes[i].getBlocks();
+			for(int complexBlock : planes[i].getComplexRegions()) {
 				Block b = blocks.get(complexBlock);
 				b.embed(payload.get(position++));
 				if (position >= payload.size()) {
