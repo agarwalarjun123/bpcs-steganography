@@ -4,31 +4,10 @@ import java.io.*;
 import java.util.*;
 
 public class Extraction {
-    private static String text = "txt";
-    private static String image1 = "png";
+    public static String[] TEXT = {"txt"};
+    public static String[] IMAGE = {"png"};
 
     private Image image;
-    private enum mimeType {
-        TEXT(1, text),
-        IMAGE1(2, image1);
-
-        private final int value;
-        private final String extension;
-
-        mimeType(int value, String extension) {
-            this.value = value;
-            this.extension = extension;
-        }
-
-        private static final Map<Integer, String> typeCodes = new HashMap<Integer, String>();
-
-        static {
-            for (mimeType m : mimeType.values()) {
-                typeCodes.put(m.value, m.extension);
-            }
-        }
-
-    };
     private int length;
     private int type;
     private int[][] pixels;
@@ -67,9 +46,9 @@ public class Extraction {
             mimeBits += bitsToString(metaBlock[i]);
         }
         length = Integer.parseInt(lengthBits,2);
-        blockList.subList(0, (int) Math.ceil(length/8)); // Get the blocks which contain data
+        blockList = blockList.subList(0, (int) Math.ceil(length/8)); // Get the blocks which contain data
         type = Integer.parseInt(mimeBits, 2);
-        String extension = mimeType.typeCodes.get(type);
+        String extension = MimeType.typeCodes.get(type)[0];
         if(extension == null)
             System.out.println("Mime type not found");
         else {
