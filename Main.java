@@ -1,52 +1,39 @@
 package BPCS;
-import java.io.File;
-
-import java.awt.image.BufferedImage;
-import javax.imageio.ImageIO;
-
+import java.util.Scanner;
 
 public class Main {
-	public static void main(String[] args) {
-
-		Image img = new Image("/home/sharon/Downloads/Chrysanthemum.png");
-		try {
-			int[][] img2 = img.readPixels();
-			Payload p = new Payload("/home/sharon/Downloads/test.jpeg", "");
-			Embedding e = new Embedding(img,p);
-			e.encode();
-			int[][] imgx = img.mergePlanes();
-			for(int i = 0;i< img2.length;i++) for(int j=0;j< img2[0].length;j++) {
-				imgx[i][j] = grayToBinary(imgx[i][j]);
-			}
-			BufferedImage img1 = new BufferedImage(img.width, img.height, 1);
-	        for(int i = 0; i < img.height; i++) {
-	        	for(int j = 0; j < img.width; j++) {
-	        		img1.setRGB(j,  i, imgx[i][j]);
-	        	}
-	        }
-			ImageIO.write(img1,"png", new File("output/encoded.png"));
-
-			Extraction ex = new Extraction();
-			ex.extract("output/encoded.png");
-		}
-		catch(Exception e) {
-			e.printStackTrace();
-		}		
-	}
-	static int grayToBinary(int rgb) {
-		int red = ~(topbc((rgb >> 16) & 0xff));
-		int green = ~(topbc((rgb >> 8) & 0xff));
-		int blue = ~(topbc(rgb & 0xff));
-		return (red << 16) | (green << 8) | blue;
+	public static void main(String[] args)  {
 		
-	}
-	static int topbc(int gray) {
-		int binary=0;
-		for(;gray > 0;gray=gray>>1){
-		    binary^=gray;
+		Scanner sc = new Scanner(System.in);
+		System.out.println("Enter 1 for embedding and 2 for extraction");
+		int option = Integer.parseInt(sc.nextLine());
+		if(option == 1) {
+			System.out.println("Enter complete path of Vessel Image");
+			String vesselPath = sc.nextLine();
+			Vessel vessel;
+			try {
+				vessel = new Vessel(vesselPath);
+				System.out.println("Enter complete path of Payload File");
+				String payloadPath = sc.nextLine();
+				Payload payload = new Payload(payloadPath);
+				Embedding e = new Embedding(vessel,payload);
+				e.encode();
+			}
+			catch(Exception e) {
+				e.printStackTrace();
+				sc.close();
+				return;
+			}
 		}
-		binary = ~ binary;
-		return binary;
+			
+		else if(option == 2) {
+			System.out.println("Enter complete path of Embedded Image");
+			String embedded = sc.nextLine();
+			Extraction ex = new Extraction();
+//			ex.extract(embedded);
+		}
+		sc.close();
 	}
+	
 }
  

@@ -20,13 +20,18 @@ public class Plane {
 	ArrayList<Block> getBlocks() {
 		return this.blocks;
 	}
+	int blockCount() {
+		return this.blocks.size();
+	}
+	int complexBlockCount() {
+		return this.complexBlocks.size();
+	}
 	void setupBlocks() {
 		ArrayList<Block> blocks = new ArrayList<Block>();
 		for (int r = 0; r < rgb.length; r+=8) for (int c=0; c< rgb[0].length; c+=8 ) {
 			if(r+8 > rgb.length || c+8 > rgb[0].length) {
 				continue;
 			}
-			
 			Block block = new Block(r,c,rgb);
 			blocks.add(block);
 		}
@@ -68,8 +73,6 @@ public class Plane {
 		return plane;
 	}
 	ArrayList<Integer> getComplexRegions() {
-		System.out.println("p="+this.index);
-		System.out.println(this.complexBlocks.size());
 		return this.complexBlocks;
 	}
 }

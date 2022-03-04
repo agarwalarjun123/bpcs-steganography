@@ -1,30 +1,34 @@
 package BPCS;
 
-import java.util.HashMap;
-import java.util.Map;
+// import java.util.HashMap;
+// import java.util.Map;
 
 public enum MimeType {
 
-    TEXT(1, Extraction.TEXT),
-    IMAGE(2, Extraction.IMAGE);
+    PNG(3, "png"),
+    JPEG(4,"jpeg"),
+    TXT(5,"txt"),
+    DOCX(6,"docx");
 
     private final int value;
-    private final String[] extension;
+    private final String extension;
 
-    MimeType(int value, String[] extension) {
+    MimeType(int value, String extension) {
         this.value = value;
         this.extension = extension;
     }
-
-    public static final Map<Integer, String[]> typeCodes = new HashMap<Integer, String[]>();
-
-    static {
-        for (MimeType m : MimeType.values()) {
-            typeCodes.put(m.value, m.extension);
-        }
-    }
-
     public int getValue() {
         return value;
+    }
+    public String getExtension(){
+        return extension;
+    }
+    public static MimeType getMimeTypeFromValue(int value) throws Exception {
+        for(MimeType mimeType : MimeType.values()) {
+            if(mimeType.value == value) {
+                return mimeType;
+            }
+        }
+        throw new Exception("No Mapping for Value Found.");
     }
 }
