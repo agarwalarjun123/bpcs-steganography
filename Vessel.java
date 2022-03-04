@@ -1,28 +1,47 @@
 package BPCS;
 
-import java.io.File;
 import java.awt.image.BufferedImage;
-
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-
 import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
 
-public class Image {
+public class Vessel {
 	private String fileName;
 	private int[][] pixels;
 	int height;
 	private int [][] graycode;
 	Plane[] planes;
 	int width;
+	long size;
+	int embeddableBlocks = 0;
+	MimeType filetype;
+	static MimeType[] ALLOWED_MIMETYPES = {MimeType.PNG};
 	
 	
-	Image(String fileName) {
+	
+	Vessel(String fileName) throws Exception {
 		this.fileName = fileName;
+		this.checkFileType();
+		this.readPixels();
+	}
+	void checkFileType() throws Exception {
+		String fileType = this.fileName.split("\\.")[1];
+		for(MimeType mimetype: ALLOWED_MIMETYPES){
+			if(fileType.equals(mimetype.getExtension())) {
+				this.filetype = mimetype;
+				return;
+			}
+		}
+		throw new Exception("Unsupported Vessel Type Provided.");
+	}
+	int getEmbeddableBlocksCount() {
+		return this.embeddableBlocks;
 	}
 	int[][] readPixels() throws IOException {
-		BufferedImage bufferedImage = ImageIO.read(new File(this.fileName));
+		File file = new File(this.fileName);
+		this.size = file.length(); 
+		BufferedImage bufferedImage = ImageIO.read(file);
 		this.height = bufferedImage.getHeight();
 		this.width = bufferedImage.getWidth();
 		int[][] pixels = new int[this.height][this.width];
@@ -30,7 +49,6 @@ public class Image {
 			for (int j =0; j< this.width; j++)
 				pixels[i][j] = bufferedImage.getRGB(j,i);
 		}
-
 		this.pixels = pixels;
 		this.convertToGrayCode();
 		this.setupPlanes();
@@ -66,6 +84,7 @@ public class Image {
 				}
 			}
 			planes[i].setupBlocks();
+			this.embeddableBlocks += planes[i].complexBlockCount();
 		}
 		this.planes = planes;
 		return planes;

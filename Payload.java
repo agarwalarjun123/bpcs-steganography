@@ -3,21 +3,68 @@ import java.io.IOException;
 import java.math.BigInteger;
 
 import java.nio.file.*;
-import java.util.ArrayList;
+import java.util.*;
 
 public class Payload {
 	String fileName;
 	byte[] fileBytes;
 	ArrayList<int[][]> blocks;
-	Payload(String file, String text) throws IOException {
+	public static final double K_MAX = 112.0; 
+	ArrayList<Integer>conjugateMap = new ArrayList<Integer>();
+	int fileSize;
+	MimeType filetype;
+	static MimeType[] ALLOWED_MIMETYPES = {MimeType.TXT};
+	
+	Payload(String file) throws Exception {
 		this.fileName = file;
+		this.checkFileType();
 		this.readFileBytes();
+	}
+	void checkFileType() throws Exception {
+		String fileType = this.fileName.split("\\.")[1];
+		for(MimeType mimetype: ALLOWED_MIMETYPES){
+			if(fileType.equals(mimetype.getExtension())) {
+				this.filetype = mimetype;
+				return;
+			}
+		}
+		throw new Exception("Unsupported Payload Type Provided.");
+	}
+	int blockCount() {
+		return this.blocks.size();
 	}
 	void readFileBytes() throws IOException {
 		byte[] fileContent;
 		fileContent = Files.readAllBytes(Paths.get(fileName));
 		this.fileBytes = fileContent;
+		this.fileSize = this.fileBytes.length;
 		this.setupPayloadBlocks();
+	}
+	List<int[][]> getConjugationMapBlocks() {
+		List<int[][]> blocks = new ArrayList<int[][]>();
+		double count = Math.floor(conjugateMap.size() / 64.0);
+		for (int i = 0; i < count; i++) {
+			int[][] block = new int[8][8];
+			for (int j = 0; j < 8; j++)
+				for (int k = 0; k < 8; k++)
+					block[j][k] = conjugateMap.get((int) i * 64 + 8 * j + k);
+			blocks.add(block);
+		}
+		int remaining = conjugateMap.size() % 64;
+		if (remaining > 0) {
+			int[][] block = new int[8][8];
+			int rows = (int) Math.floor(remaining / 8.0);
+			int cols = remaining % 8;
+			for (int i = 0; i < rows; i++)
+				for (int j = 0; j < 8; j++) {
+					block[i][j] = conjugateMap.get((int) count * 64 + 8 * i + j);
+				}
+			for (int i = 0; i < cols; i++)
+				block[rows][i] = conjugateMap.get(64 * (int) count + rows * 8 + i);
+			blocks.add(block);
+		}
+		return blocks;
+
 	}
 	void setupPayloadBlocks() {
 		blocks = new ArrayList<int[][]>();
@@ -30,8 +77,14 @@ public class Payload {
 			for(int k = size; k < 8;k++) {
 				block[k] = new int[] {1,1,1,1,1,1,1,1};
 			}
+			if (this.getKValue(block)/K_MAX <= 0.3) {
+				block = this.conjugateBlock(block);
+				this.conjugateMap.add(1);
+			}
+			else {
+				this.conjugateMap.add(0);
+			}
 			blocks.add(block);
-			
 		}
 	}
 	int[][] conjugateBlock(int[][] block) {
@@ -41,6 +94,12 @@ public class Payload {
 			i = (i+1) %2;
 		}
 		return block;
+	}
+	int getKValue(int[][] block) {
+		int changes = 0;
+		for(int r = 0; r< 8; r++) for(int c= 0;c < 7;c++) if(block[r][c] != block[r][c+1]) changes++;
+		for(int c = 0; c < 8 ; c++) for(int r= 0;r < 7;r++) if(block[r][c] != block[r+1][c]) changes++;
+		return changes;
 	}
 	int[] convertToBinary(byte i) {
 		int n;

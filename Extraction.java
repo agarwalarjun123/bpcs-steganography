@@ -7,7 +7,7 @@ public class Extraction {
     public static String[] TEXT = {"txt"};
     public static String[] IMAGE = {"png"};
 
-    private Image image;
+    private Vessel image;
     private int length;
     private int type;
     private int[][] pixels;
@@ -19,8 +19,8 @@ public class Extraction {
 
     }
 
-    public void extract(String filename) throws IOException {
-        this.image = new Image(filename);
+    public void extract(String filename) throws Exception {
+        this.image = new Vessel(filename);
         try {
             pixels = image.readPixels();
         } catch (IOException e) {
@@ -48,7 +48,7 @@ public class Extraction {
         length = Integer.parseInt(lengthBits,2);
         blockList = blockList.subList(0, (int) Math.ceil(length/8)); // Get the blocks which contain data
         type = Integer.parseInt(mimeBits, 2);
-        String extension = MimeType.typeCodes.get(type)[0];
+        String extension = MimeType.getMimeTypeFromValue(type).getExtension();
         if(extension == null)
             System.out.println("Mime type not found");
         else {
