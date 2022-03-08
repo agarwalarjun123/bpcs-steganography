@@ -48,43 +48,43 @@ public class Extraction {
         }
         length = Integer.parseInt(lengthBits, 2);
         double totalDataBlocks = Math.ceil(length / 8.0);
-        double totalConjugationBlocks = Math.ceil(totalDataBlocks / 64.0);
+        // double totalConjugationBlocks = Math.ceil(totalDataBlocks / 64.0);
 
-        List<int[][]> conjugationBlocks = blockList.subList(0, (int) totalConjugationBlocks);
-        List<Integer> map = new ArrayList<>();
-        for (int[][] block : conjugationBlocks) {
-             int[][] final_block = Payload.conjugateBlock(block);
-             for(int i = 0; i< 8;i++) for (int j = 0; j< 8;j++) map.add(final_block[i][j]);
-        };
-        map = map.subList(0, (int)totalDataBlocks);
-        blockList = blockList.subList((int)totalConjugationBlocks,(int)totalConjugationBlocks + (int)totalDataBlocks);
+        // List<int[][]> conjugationBlocks = blockList.subList(0, (int) totalConjugationBlocks);
+        // List<Integer> map = new ArrayList<>();
+        // for (int[][] block : conjugationBlocks) {
+        //      int[][] final_block = Payload.conjugateBlock(block);
+        //      for(int i = 0; i< 8;i++) for (int j = 0; j< 8;j++) map.add(final_block[i][j]);
+        // };
+        // map = map.subList(0, (int)totalDataBlocks);
+        // blockList = blockList.subList((int)totalConjugationBlocks,(int)totalConjugationBlocks + (int)totalDataBlocks);
 
 
-        // /* Conjugation Data */
-        // List<int[][]> conjugatedBlocks = new ArrayList<>();
-        // int conjugationMapSize = (int) Math.floor(totalDataBlocks / 64.0) * 64 + (int) (totalDataBlocks % 64);
-        // int val = (int) Math.ceil(totalDataBlocks / 64.0); // No of conjugation map blocks
-        // int index = 0, size = 1;
-        // while (index < val && size <= conjugationMapSize) {
-        //     int[][] b = Payload.conjugateBlock(blockList.get(index));
-        //     for (int i = 0; i < 8; i++) {
-        //         for (int j = 0; j < 8; j++) {
-        //             if (size <= conjugationMapSize) {
-        //                 if (b[i][j] == 1) {
-        //                     conjugatedBlocks.add(Payload.conjugateBlock(blockList.get(val + size - 1)));
-        //                 } else
-        //                     conjugatedBlocks.add(blockList.get(val + size - 1));
-        //                 size++;
-        //             } else
-        //                 break;
-        //         }
-        //     }
-        //     index++;
-        // }
-        // blockList.removeAll(blockList.subList(0, val)); // Remove conjugation blocks
+        /* Conjugation Data */
+        List<int[][]> conjugatedBlocks = new ArrayList<>();
+        int conjugationMapSize = (int) Math.floor(totalDataBlocks / 64.0) * 64 + (int) (totalDataBlocks % 64);
+        int val = (int) Math.ceil(totalDataBlocks / 64.0); // No of conjugation map blocks
+        int index = 0, size = 1;
+        while (index < val && size <= conjugationMapSize) {
+            int[][] b = Payload.conjugateBlock(blockList.get(index));
+            for (int i = 0; i < 8; i++) {
+                for (int j = 0; j < 8; j++) {
+                    if (size <= conjugationMapSize) {
+                        if (b[i][j] == 1) {
+                            conjugatedBlocks.add(Payload.conjugateBlock(blockList.get(val + size - 1)));
+                        } else
+                            conjugatedBlocks.add(blockList.get(val + size - 1));
+                        size++;
+                    } else
+                        break;
+                }
+            }
+            index++;
+        }
+        blockList.removeAll(blockList.subList(0, val)); // Remove conjugation blocks
 
-        // /* Extracting data */
-        // blockList = blockList.subList(0, (int) Math.ceil(length / 8.0)); // Get the blocks which contain data
+        /* Extracting data */
+        blockList = blockList.subList(0, (int) Math.ceil(length / 8.0)); // Get the blocks which contain data
         type = Integer.parseInt(mimeBits, 2);
         String extension = MimeType.getMimeTypeFromValue(type).getExtension();
         if (extension == null)
@@ -92,18 +92,17 @@ public class Extraction {
         else {
             /* Convert the blocks to bytes */
             List<Byte> bytes = new ArrayList<>();
-            for (int i = 0;i<blockList.size();i++) {
-                int[][] block = blockList.get(i);
-                if(map.get(i) == 1) {
-                    block = Payload.conjugateBlock(block);
-                }
-                for (int j = 0; j < 8; j++) {
-                    bytes.add((byte) Integer.parseInt(bitsToString(block[j]), 2));
+            for (int[][] block : blockList) {
+                for (int i = 0; i < 8; i++) {
+                    bytes.add((byte) Integer.parseInt(bitsToString(block[i]), 2));
                 }
             }
             /* Remove the padding */
-            if (length < bytes.size())
-                bytes = bytes.subList(0, (int)length);
+            if(length < bytes.size())
+                  bytes.subList((int)length, bytes.size()).clear();
+            // /* Remove the padding */
+            // if (length < bytes.size())
+            //     bytes = bytes.subList(0, (int)length);
 
             /* Convert list to array of bytes */
             byte[] byteArray = new byte[bytes.size()];
