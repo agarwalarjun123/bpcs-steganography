@@ -79,9 +79,7 @@ public class Payload {
 				block[k] = new int[] {1,1,1,1,1,1,1,1};
 			}
 			if (this.getKValue(block)/K_MAX <= 0.3) {
-				System.out.println(this.getKValue(block)/K_MAX);
 				block = conjugateBlock(block);
-				System.out.println(this.getKValue(block)/K_MAX);
 				this.conjugateMap.add(1);
 			}
 			else {
