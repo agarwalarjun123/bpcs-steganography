@@ -13,7 +13,7 @@ public class Payload {
 	ArrayList<Integer>conjugateMap = new ArrayList<Integer>();
 	int fileSize;
 	MimeType filetype;
-	static MimeType[] ALLOWED_MIMETYPES = {MimeType.TXT};
+	static MimeType[] ALLOWED_MIMETYPES = {MimeType.TXT, MimeType.PNG, MimeType.JPEG, MimeType.PDF};
 	
 	Payload(String file) throws Exception {
 		this.fileName = file;
@@ -64,19 +64,21 @@ public class Payload {
 			blocks.add(block);
 		}
 		return blocks;
-
 	}
 	void setupPayloadBlocks() {
 		blocks = new ArrayList<int[][]>();
 		for (int i = 0; i < Math.ceil((fileBytes.length/8.0)) ;i++){
 			int[][] block = new int[8][];
-			int size = i == Math.ceil(fileBytes.length/8.0) - 1 ? fileBytes.length % 8 : 8;
+			int size = (i == Math.ceil(fileBytes.length/8.0) - 1) && (fileBytes.length%8.0 != 0) ? fileBytes.length % 8 : 8;
 			for (int j = 0; j < size ; j++) {
 				block[j] = this.convertToBinary(fileBytes[i* 8 + j]);
 			}
+
 			for(int k = size; k < 8;k++) {
 				block[k] = new int[] {1,1,1,1,1,1,1,1};
 			}
+
+
 			if (this.getKValue(block)/K_MAX <= 0.3) {
 				block = this.conjugateBlock(block);
 				this.conjugateMap.add(1);
@@ -87,7 +89,7 @@ public class Payload {
 			blocks.add(block);
 		}
 	}
-	int[][] conjugateBlock(int[][] block) {
+	static int[][] conjugateBlock(int[][] block) {
 		int i = 0;
 		for (int j=0;j<8;j++) for (int k=0;k<8;k++) {
 			block[j][k] = block[j][k] ^ i;

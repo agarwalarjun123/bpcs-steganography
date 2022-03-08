@@ -9,8 +9,6 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 
 public class Embedding {
-	public static Map<Integer, List> testArray = new HashMap();
-	public List<Integer> arraylist = new ArrayList();
 
 	public Embedding(Vessel im, Payload p) throws Exception {
 		super();
@@ -34,8 +32,9 @@ public class Embedding {
 		List<int[][]> conjugationBlocks = p.getConjugationMapBlocks();
 		List<int[][]> finalpayload = new ArrayList<int[][]>();
 
-		finalpayload.add(metaData);
-		finalpayload.addAll(conjugationBlocks);
+		finalpayload.add(Payload.conjugateBlock(metaData));
+		conjugationBlocks.forEach(b->finalpayload.add(Payload.conjugateBlock(b)));
+//		finalpayload.addAll(conjugationBlocks);
 		finalpayload.addAll(payload);
 
 		for (int i = 0; i < planes.length; i++) {
@@ -67,7 +66,8 @@ public class Embedding {
 				img1.setRGB(j, i, finalImage[i][j]);
 			}
 		}
-		ImageIO.write(img1, "png", new File("/Users/arjunagarwal/Desktop/output.png"));
+//		ImageIO.write(img1, "png", new File("/Users/arjunagarwal/Desktop/output.png"));
+		ImageIO.write(img1, "png", new File("output/output.png"));
 	}
 
 	private int[][] getMetaData() throws Exception {

@@ -8,7 +8,9 @@ public enum MimeType {
     PNG(3, "png"),
     JPEG(4,"jpeg"),
     TXT(5,"txt"),
-    DOCX(6,"docx");
+    DOCX(6,"docx"),
+    BMP(7,"bmp"),
+    PDF(8,"pdf");
 
     private final int value;
     private final String extension;

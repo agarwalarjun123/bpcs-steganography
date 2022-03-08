@@ -16,7 +16,7 @@ public class Vessel {
 	long size;
 	int embeddableBlocks = 0;
 	MimeType filetype;
-	static MimeType[] ALLOWED_MIMETYPES = {MimeType.PNG};
+	static MimeType[] ALLOWED_MIMETYPES = {MimeType.PNG, MimeType.BMP};
 	
 	
 	

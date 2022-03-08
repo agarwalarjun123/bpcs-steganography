@@ -2,13 +2,14 @@ package BPCS;
 
 import java.io.*;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class Extraction {
     public static String[] TEXT = {"txt"};
     public static String[] IMAGE = {"png"};
 
     private Vessel image;
-    private int length;
+    private double length;
     private int type;
     private int[][] pixels;
     Plane[] planes;
@@ -28,24 +29,55 @@ public class Extraction {
         }
         this.planes = image.getPlanes();
 
-        /* Get complex blocks and check for the padding */
+        /* Get complex blocks */
         for(int i = 0; i< 24; i++) {
             for (int b : planes[i].getComplexRegions()) {
                 blockList.add(planes[i].getBlocks().get(b).block);
             }
         }
 
+
         /* Get meta data */
-        int[][] metaBlock = blockList.get(0);
+        int[][] metaBlock = Payload.conjugateBlock(blockList.get(0));
         blockList.remove(0);
         String lengthBits = "", mimeBits = "";
         for(int i=0; i<4; i++) {
-             lengthBits += bitsToString(metaBlock[i]);
+            lengthBits += bitsToString(metaBlock[i]);
         }
         for(int i=4; i<8; i++) {
             mimeBits += bitsToString(metaBlock[i]);
         }
         length = Integer.parseInt(lengthBits,2);
+        double totalDataBlocks =  Math.ceil(length/8);
+
+
+        /*Conjugation Data*/
+        List<int[][]> conjugatedBlocks = new ArrayList<>();
+        int conjugationMapSize = (int) Math.floor(totalDataBlocks/64)*64 + (int) (totalDataBlocks%64);
+        int val = (int) Math.ceil(totalDataBlocks/64); // No of conjugation map blocks
+        int index = 0, size = 1;
+        while(index < val && size<=conjugationMapSize) {
+            int[][] b = Payload.conjugateBlock(blockList.get(index));
+            for (int i = 0; i < 8; i++) {
+                for (int j = 0; j < 8; j++) {
+                    if (size <= conjugationMapSize) {
+                        if (b[i][j] == 1) {
+                            conjugatedBlocks.add(Payload.conjugateBlock(blockList.get(val + size-1)));
+                        }
+                        else
+                            conjugatedBlocks.add(blockList.get(val+size-1));
+                        size++;
+                    }
+                    else
+                        break;
+                }
+            }
+            index++;
+        }
+        blockList.removeAll(blockList.subList(0,val)); // Remove conjugation blocks
+
+
+        /* Extracting data */
         blockList = blockList.subList(0, (int) Math.ceil(length/8)); // Get the blocks which contain data
         type = Integer.parseInt(mimeBits, 2);
         String extension = MimeType.getMimeTypeFromValue(type).getExtension();
@@ -61,7 +93,7 @@ public class Extraction {
             }
             /* Remove the padding */
             if(length < bytes.size())
-                  bytes.subList(length-1, bytes.size()).clear();
+                  bytes.subList((int)length, bytes.size()).clear();
 
             /* Convert list to array of bytes */
             byte[] byteArray = new byte[bytes.size()];

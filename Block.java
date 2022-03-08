@@ -20,8 +20,10 @@ public class Block {
 	}
 	
 	void embed(int data[][]) {
-		for(int i = 0; i< this.block.length; i++) for(int j = 0; j< this.block[0].length; j++) {
-			block[i][j] = data[i][j];
+		for(int i = 0; i< this.block.length; i++) {
+			for (int j = 0; j < this.block[0].length; j++) {
+				block[i][j] = data[i][j];
+			}
 		}
 	}
 	

@@ -2,7 +2,7 @@ package BPCS;
 import java.util.Scanner;
 
 public class Main {
-	public static void main(String[] args)  {
+	public static void main(String[] args) throws Exception {
 		
 		Scanner sc = new Scanner(System.in);
 		System.out.println("Enter 1 for embedding and 2 for extraction");
@@ -30,7 +30,7 @@ public class Main {
 			System.out.println("Enter complete path of Embedded Image");
 			String embedded = sc.nextLine();
 			Extraction ex = new Extraction();
-//			ex.extract(embedded);
+			ex.extract(embedded);
 		}
 		sc.close();
 	}
