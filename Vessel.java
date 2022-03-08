@@ -8,7 +8,7 @@ import javax.imageio.ImageIO;
 
 public class Vessel {
 	private String fileName;
-	private int[][] pixels;
+	int[][] pixels;
 	int height;
 	private int [][] graycode;
 	Plane[] planes;

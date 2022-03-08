@@ -6,6 +6,7 @@ public class Plane {
 	int height,width;
 	int[][] rgb;
 	ArrayList<Block> blocks;
+	static double K_MAX = 112.0;
 	ArrayList<Integer> complexBlocks = new ArrayList<Integer>();
 	
 	Plane(int i,int height, int width) {
@@ -51,7 +52,7 @@ public class Plane {
 	void calculateComplexBlocks() {
 		int maxComplexity = this.maxComplexity();		
 		for(int i = 0; i< blocks.size() ; i++) {
-			if(maxComplexity != 0 && (blocks.get(i).getKValue()/ (float)(maxComplexity) >= 0.60)) {
+			if(maxComplexity != 0 && (blocks.get(i).getKValue()/ K_MAX >= 0.3)) {
 				complexBlocks.add(i);
 			}
 		}

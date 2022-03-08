@@ -66,8 +66,8 @@ public class Embedding {
 				img1.setRGB(j, i, finalImage[i][j]);
 			}
 		}
-//		ImageIO.write(img1, "png", new File("/Users/arjunagarwal/Desktop/output.png"));
-		ImageIO.write(img1, "png", new File("output/output.png"));
+		ImageIO.write(img1, "png", new File("/Users/arjunagarwal/Desktop/output.png"));
+		// ImageIO.write(img1, "png", new File("output/output.png"));
 	}
 
 	private int[][] getMetaData() throws Exception {
